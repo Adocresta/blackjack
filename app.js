@@ -22,6 +22,7 @@ let playerCardDrawnFiveAvailable = true;
 //dealers card pre-determined
 let dealerShownCard = getRndInteger(1, 10);
 let dealerHiddenCard = getRndInteger(1, 10);
+//! KNOWN BUG DETECTED if newly drawn cards get 1 it messes up all the loop
 let dealerCardDrawnOne = getRndInteger(1, 10);
 let dealerCardDrawnOneAvailable = true;
 let dealerCardDrawnTwo = getRndInteger(1, 10);
@@ -160,6 +161,7 @@ if (playerWin) {
   console.log("you lost");
 }
 
+//! KNOWN BUG DETECTED if newly drawn cards get 1 it messes up all the loop
 function drawACardforPlayer() {
   //   // Need to check if new drawn cards are ace or not
   if (playerDecisionInPromt == playerDecision[0] && playerDecisionAvailable) {
