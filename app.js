@@ -4,7 +4,9 @@ function getRndInteger(min, max) {
 }
 
 //setting the initial cards player and dealer get
-let playerFirstInitialCard = 1;
+
+//Player cards pre-determined here
+let playerFirstInitialCard = getRndInteger(1, 10);
 let playerSecondInitialCard = getRndInteger(1, 10);
 let playerCardDrawnOne = getRndInteger(1, 10);
 let playerCardDrawnOneAvailable = true;
@@ -12,11 +14,26 @@ let playerCardDrawnTwo = getRndInteger(1, 10);
 let playerCardDrawnTwoAvailable = true;
 let playerCardDrawnThree = getRndInteger(1, 10);
 let playerCardDrawnThreeAvailable = true;
+let playerCardDrawnFour = getRndInteger(1, 10);
+let playerCardDrawnFourAvailable = true;
+let playerCardDrawnFive = getRndInteger(1, 10);
+let playerCardDrawnFiveAvailable = true;
+
+//dealers card pre-determined
 let dealerShownCard = getRndInteger(1, 10);
 let dealerHiddenCard = getRndInteger(1, 10);
 let dealerCardDrawnOne = getRndInteger(1, 10);
+let dealerCardDrawnOneAvailable = true;
 let dealerCardDrawnTwo = getRndInteger(1, 10);
+let dealerCardDrawnTrueAvailable = true;
 let dealerCardDrawnThree = getRndInteger(1, 10);
+let dealerCardDrawnThreeAvailable = true;
+let dealerCardDrawnFour = getRndInteger(1, 10);
+let dealerCardDrawnFourAvailable = true;
+let dealerCardDrawnFive = getRndInteger(1, 10);
+let dealerCardDrawnFiveAvailable = true;
+
+//initial scores, win cons,
 let playerScore = playerFirstInitialCard + playerSecondInitialCard;
 let DealerScore = dealerShownCard + dealerHiddenCard;
 let playerWin = false;
@@ -25,6 +42,7 @@ let playerDecisionAvailable = false;
 let playerDecision = ["draw", "stay"];
 let playerDecisionInPromt;
 let AceCardEffectAvailableForPlayer = false;
+let AceCardEffectAvailableForDealer = false;
 let plus10Available = false;
 let gameOver = false;
 
@@ -48,7 +66,7 @@ if (playerFirstInitialCard == 1 || playerSecondInitialCard == 1) {
 console.log("Dealer got a " + dealerShownCard + " and a hidden card");
 prompt("check console:");
 
-//game loop ? Player turn
+//Game loop for player turn
 while (!gameOver) {
   // if player got Ace card in his dec
 
@@ -74,6 +92,19 @@ while (!gameOver) {
       }
     }
 
+    if (AceCardEffectAvailableForPlayer) {
+      if (playerScore >= 21) {
+        if (playerScore == 21) {
+          playerWin = true;
+          gameOver = true;
+          break;
+        } else playerWin = false;
+        // // gameOver doesn't stop the loop for some reason (it's bcs loop still works till end
+        gameOver = true;
+        break;
+      }
+    }
+
     // ask the player if he wants to draw continiously until his answer matches with intenden options
     checkIfDecisionAvailable();
 
@@ -92,6 +123,17 @@ while (!gameOver) {
 
   // if there is no ace card effect
   if (!AceCardEffectAvailableForPlayer) {
+    if (playerScore >= 21) {
+      if (playerScore == 21) {
+        playerWin = true;
+        gameOver = true;
+        break;
+      } else playerWin = false;
+      // // gameOver doesn't stop the loop for some reason (it's bcs loop still works till end
+      gameOver = true;
+      break;
+    }
+
     // ask the player if he wants to draw continiously until his answer matches with intenden options
     checkIfDecisionAvailable();
 
@@ -107,7 +149,11 @@ while (!gameOver) {
   }
 }
 
-// after loop
+//after loop
+
+//dealer draws cards until he got 21 or bigger
+
+// !todo calculate 21 - player score smaller score wins
 if (playerWin) {
   console.log("you win");
 } else {
@@ -115,7 +161,7 @@ if (playerWin) {
 }
 
 function drawACardforPlayer() {
-  //   TODO: Need to check if new drawn cards are ace or not
+  //   // Need to check if new drawn cards are ace or not
   if (playerDecisionInPromt == playerDecision[0] && playerDecisionAvailable) {
     if (playerCardDrawnOneAvailable) {
       if (playerCardDrawnOne == 1) {
@@ -146,6 +192,26 @@ function drawACardforPlayer() {
         console.log(playerScore);
         playerDecisionAvailable = false;
         playerCardDrawnThreeAvailable = false;
+      }
+    } else if (playerCardDrawnFourAvailable && !playerCardDrawnThreeAvailable) {
+      if (playerCardDrawnFour == 1) {
+        AceCardEffectAvailableForPlayer = true;
+      } else {
+        console.log("You have drawn a " + playerCardDrawnFour + " card");
+        playerScore = playerScore + playerCardDrawnFour;
+        console.log(playerScore);
+        playerDecisionAvailable = false;
+        playerCardDrawnFourAvailable = false;
+      }
+    } else if (playerCardDrawnFiveAvailable && !playerCardDrawnFourAvailable) {
+      if (playerCardDrawnFive == 1) {
+        AceCardEffectAvailableForPlayer = true;
+      } else {
+        console.log("You have drawn a " + playerCardDrawnFive + " card");
+        playerScore = playerScore + playerCardDrawnFive;
+        console.log(playerScore);
+        playerDecisionAvailable = false;
+        playerCardDrawnFiveAvailable = false;
         gameOver = true;
       }
     }
@@ -160,6 +226,7 @@ function checkIfDecisionAvailable() {
       playerDecisionInPromt == playerDecision[1]
     ) {
       playerDecisionAvailable = true;
+      break;
     }
   }
 }
