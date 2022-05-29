@@ -6,23 +6,24 @@ function getRndInteger(min, max) {
 //setting the initial cards player and dealer get
 
 //Player cards pre-determined here
-let playerFirstInitialCard = 1;
-let playerSecondInitialCard = 1;
-let playerCardDrawnOne = 1;
+let playerFirstInitialCard = getRndInteger(1, 10);
+let playerSecondInitialCard = getRndInteger(1, 10);
+let playerCardDrawnOne = getRndInteger(1, 10);
 let playerCardDrawnOneAvailable = true;
-let playerCardDrawnTwo = 1;
+//! KNOWN BUG DETECTED if newly drawn cards get 1 it messes up all the loop
+let playerCardDrawnTwo = getRndInteger(2, 10);
 let playerCardDrawnTwoAvailable = true;
-let playerCardDrawnThree = getRndInteger(1, 10);
+let playerCardDrawnThree = getRndInteger(2, 10);
 let playerCardDrawnThreeAvailable = true;
-let playerCardDrawnFour = getRndInteger(1, 10);
+let playerCardDrawnFour = getRndInteger(2, 10);
 let playerCardDrawnFourAvailable = true;
-let playerCardDrawnFive = getRndInteger(1, 10);
+let playerCardDrawnFive = getRndInteger(2, 10);
 let playerCardDrawnFiveAvailable = true;
 
 //dealers card pre-determined
 let dealerShownCard = getRndInteger(1, 10);
 let dealerHiddenCard = getRndInteger(1, 10);
-//! KNOWN BUG DETECTED if newly drawn cards get 1 it messes up all the loop
+
 let dealerCardDrawnOne = getRndInteger(1, 10);
 let dealerCardDrawnOneAvailable = true;
 let dealerCardDrawnTwo = getRndInteger(1, 10);
@@ -71,9 +72,15 @@ prompt("check console:");
 while (!gameOver) {
   // ask the player if he wants to draw continiously until his answer matches with intenden options
   checkIfDecisionAvailable();
-
+  if (gameOver) {
+    break;
+  }
   // if he types draw
   drawACardforPlayer();
+
+  if (gameOver) {
+    break;
+  }
 
   // if he types stay
   if (playerDecisionInPromt == playerDecision[1]) {
@@ -121,7 +128,7 @@ while (!gameOver) {
     console.log(playerScore);
   } else if (!AceCardEffectAvailableForPlayer) {
     if (playerScore >= 21) {
-      if (playerScore == 21) {
+      if (playerScore === 21) {
         playerWin = true;
         gameOver = true;
         break;
@@ -131,20 +138,37 @@ while (!gameOver) {
       break;
     }
   }
+
+  if (gameOver) {
+    break;
+  }
 }
 
 //after loop
 
-//dealer draws cards until he got 21 or bigger
-
-// !todo calculate 21 - player score smaller score wins
-if (playerWin) {
-  console.log("you win");
-} else {
-  console.log("you lost");
+// if player busted dealer auto win player lone
+if (playerScore > 21) {
+  console.log("Dealer Win! Player lose!");
 }
 
-//! KNOWN BUG DETECTED if newly drawn cards get 1 it messes up all the loop
+// first win con is based on player has more score than dealers initial 2 card
+if (DealerScore > playerScore) {
+  console.log("Dealer Win! Player lose!");
+}
+
+// If dealer didn't with only 2 cards dealer starts to draw cards until he got 21 or bigger
+// If dealer gets 21 he get busted and lose!
+
+// !todo calculate 21 - player score smaller score wins
+if (playerScore > DealerScore && playerScore <= 21) {
+  console.log("You Win!");
+}
+
+if (playerScore === DealerScore) {
+  console.log("DRAW!");
+}
+
+//! BUG DETECTED if 1st 2nd drawn cards get 1 it messes up all the loop
 function drawACardforPlayer() {
   //   // Need to check if new drawn cards are ace or not
   if (playerDecisionInPromt == playerDecision[0] && playerDecisionAvailable) {
@@ -159,8 +183,9 @@ function drawACardforPlayer() {
       playerDecisionAvailable = false;
       playerCardDrawnOneAvailable = false;
     }
+    // !Cant draw the second card no matter what
   } else if (playerCardDrawnTwoAvailable && !playerCardDrawnOneAvailable) {
-    if (playerCardDrawnTwo === 1 && !(playerCardDrawnOne == 1)) {
+    if (playerCardDrawnTwo === 1) {
       AceCardEffectAvailableForPlayer = true;
       plus10Available = true;
     }
@@ -169,6 +194,9 @@ function drawACardforPlayer() {
     console.log(playerScore);
     playerDecisionAvailable = false;
     playerCardDrawnTwoAvailable = false;
+    if (playerScore > 21 && !AceCardEffectAvailableForPlayer) {
+      gameOver = true;
+    }
   } else if (playerCardDrawnThreeAvailable && !playerCardDrawnTwoAvailable) {
     if (playerCardDrawnThree == 1) {
       AceCardEffectAvailableForPlayer = true;
