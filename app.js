@@ -222,7 +222,8 @@ function drawACardforPlayer() {
 
 function checkIfDecisionAvailable() {
   while (!playerDecisionAvailable) {
-    playerDecisionInPromt = prompt("Please enter draw or stay:");
+    // implemented lower case input
+    playerDecisionInPromt = prompt("Please enter draw or stay:").toLowerCase;
     if (
       playerDecisionInPromt == playerDecision[0] ||
       playerDecisionInPromt == playerDecision[1]
